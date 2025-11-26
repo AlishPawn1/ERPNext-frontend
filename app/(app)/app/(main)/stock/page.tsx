@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const StockPage = () => {
-  return (
-    <div>
-      THIS IS STOCK PAGE
-    </div>
-  )
-}
+  return <div>THIS IS STOCK PAGE</div>;
+};
 
-export default StockPage
+export default StockPage;

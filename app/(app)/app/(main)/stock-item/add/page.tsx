@@ -43,9 +43,7 @@ const StockItemForm = () => {
     },
     onError: (error: unknown) => {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to create stock item";
+        error instanceof Error ? error.message : "Failed to create stock item";
       toast.error(message);
     },
   });
@@ -114,9 +112,7 @@ const StockItemForm = () => {
             {...register("uom")}
             className="w-full border rounded px-2 py-1"
           />
-          {errors.uom && (
-            <p className="text-red-500">{errors.uom.message}</p>
-          )}
+          {errors.uom && <p className="text-red-500">{errors.uom.message}</p>}
         </div>
 
         {/* Item Group */}

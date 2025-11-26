@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import { Home, Users, Settings, ChevronDown, ChevronUp, Box } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState } from "react";
+import {
+  Home,
+  Users,
+  Settings,
+  ChevronDown,
+  ChevronUp,
+  Box,
+} from "lucide-react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 type SidebarLink = {
   name: string;
@@ -11,19 +18,19 @@ type SidebarLink = {
 };
 
 const sidebarLinks: SidebarLink[] = [
-  { name: 'Dashboard', href: '/app/dashboard', icon: Home },
+  { name: "Dashboard", href: "/app/dashboard", icon: Home },
   {
-    name: 'Users',
+    name: "Users",
     icon: Users,
     children: [
-      { name: 'All Users', href: '/app/users/all', icon: Users },
-      { name: 'Add User', href: '/app/users/add', icon: Users },
+      { name: "All Users", href: "/app/users/all", icon: Users },
+      { name: "Add User", href: "/app/users/add", icon: Users },
     ],
   },
-  { name: 'Home', href: '/app/home', icon: Settings },
-  { name: 'Stock', href: '/app/stock', icon: Box },
-  { name: 'Stock Item', href: '/app/stock-item', icon: Box },
-  { name: 'Stock Item Group', href: '/app/stock-item-group', icon: Box },
+  { name: "Home", href: "/app/home", icon: Settings },
+  { name: "Stock", href: "/app/stock", icon: Box },
+  { name: "Stock Item", href: "/app/stock-item", icon: Box },
+  { name: "Stock Item Group", href: "/app/stock-item-group", icon: Box },
 ];
 
 const Sidebar = () => {
@@ -51,12 +58,15 @@ const Sidebar = () => {
               {/* Parent Link */}
               <div
                 className={`flex items-center justify-between px-3 py-2 rounded cursor-pointer hover:bg-gray-700 transition-colors ${
-                  isActive ? 'bg-gray-700' : ''
+                  isActive ? "bg-gray-700" : ""
                 }`}
               >
                 {/* Parent link */}
                 {link.href ? (
-                  <Link href={link.href} className="flex items-center gap-2 flex-1">
+                  <Link
+                    href={link.href}
+                    className="flex items-center gap-2 flex-1"
+                  >
                     <Icon size={20} />
                     <span>{link.name}</span>
                   </Link>
@@ -74,7 +84,11 @@ const Sidebar = () => {
                     className="ml-2 focus:outline-none"
                     type="button"
                   >
-                    {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    {isOpen ? (
+                      <ChevronUp size={16} />
+                    ) : (
+                      <ChevronDown size={16} />
+                    )}
                   </button>
                 )}
               </div>
@@ -86,11 +100,15 @@ const Sidebar = () => {
                     const ChildIcon = child.icon;
                     const isChildActive = pathname === child.href;
                     const classes = `flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-700 transition-colors ${
-                      isChildActive ? 'bg-gray-700' : ''
+                      isChildActive ? "bg-gray-700" : ""
                     }`;
 
                     return child.href ? (
-                      <Link key={child.name} href={child.href} className={classes}>
+                      <Link
+                        key={child.name}
+                        href={child.href}
+                        className={classes}
+                      >
                         <ChildIcon size={16} />
                         <span>{child.name}</span>
                       </Link>

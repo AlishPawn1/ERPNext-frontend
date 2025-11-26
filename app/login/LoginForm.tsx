@@ -31,7 +31,8 @@ export default function LoginForm() {
     },
     onError: (error: AxiosError<{ message?: string }>) => {
       const message =
-        error.response?.data?.message || "Invalid credentials. Please try again.";
+        error.response?.data?.message ||
+        "Invalid credentials. Please try again.";
       toast.error(message);
     },
   });
@@ -55,7 +56,10 @@ export default function LoginForm() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Email / Username */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Email or Username
               </label>
               <input
@@ -67,13 +71,18 @@ export default function LoginForm() {
                 placeholder="you@example.com"
               />
               {errors.email && (
-                <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             {/* Password with Show/Hide */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -99,7 +108,9 @@ export default function LoginForm() {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 

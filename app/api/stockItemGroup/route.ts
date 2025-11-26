@@ -1,26 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-const FRAPPE_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const FRAPPE_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 export async function GET(request: NextRequest) {
   try {
-    const search = request.nextUrl.search || '';
+    const search = request.nextUrl.search || "";
     const backendUrl = `${FRAPPE_BASE_URL}/resource/Item Group${search}`;
 
     const resp = await fetch(backendUrl, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        Accept: 'application/json',
+        Accept: "application/json",
         // Forward cookies for authentication
-        'Cookie': request.headers.get('cookie') || '',
+        Cookie: request.headers.get("cookie") || "",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!resp.ok) {
       const errorText = await resp.text();
-      console.error('Backend error:', resp.status, errorText);
-      
+      console.error("Backend error:", resp.status, errorText);
+
       return NextResponse.json(
         { error: `Backend error: ${resp.statusText}`, details: errorText },
         { status: resp.status }
@@ -30,24 +31,20 @@ export async function GET(request: NextRequest) {
     const data = await resp.json();
 
     const response = NextResponse.json(data, { status: 200 });
-    
+
     // Forward Set-Cookie headers back to browser
-    const setCookie = resp.headers.get('set-cookie');
+    const setCookie = resp.headers.get("set-cookie");
     if (setCookie) {
-      response.headers.set('Set-Cookie', setCookie);
+      response.headers.set("Set-Cookie", setCookie);
     }
 
     return response;
   } catch (error: unknown) {
-    console.error('Item Group API Error:', error);
-    
-    const message = error instanceof Error
-      ? error.message
-      : 'Failed to fetch item groups';
+    console.error("Item Group API Error:", error);
 
-    return NextResponse.json(
-      { error: message }, 
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch item groups";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

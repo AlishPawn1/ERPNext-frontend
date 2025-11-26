@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const SingleStockItem = () => {
-  return (
-    <div>
-      this is single stock item page
-    </div>
-  )
-}
+  return <div>this is single stock item page</div>;
+};
 
-export default SingleStockItem
+export default SingleStockItem;

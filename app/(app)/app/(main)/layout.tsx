@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
-import { AdminHeader } from '@/app/components/shared/app/Header';
-import { Sidebar } from '@/app/components/shared/app/Sidebar';
-import React from 'react';
+import { AdminHeader } from "@/app/components/shared/app/Header";
+import { Sidebar } from "@/app/components/shared/app/Sidebar";
+import React from "react";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-
   return (
     <main>
       <div className="flex text-sm">

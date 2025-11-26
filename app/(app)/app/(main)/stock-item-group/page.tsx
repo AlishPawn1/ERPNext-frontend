@@ -1,17 +1,17 @@
 "use client";
 
-import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { fetchStockItemGroups } from '@/lib/api/stockItemGroup';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchStockItemGroups } from "@/lib/api/stockItemGroup";
 
 const StockItemGroup = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['stock-items-groups'],
-    queryFn: fetchStockItemGroups
-  })
+    queryKey: ["stock-items-groups"],
+    queryFn: fetchStockItemGroups,
+  });
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error loading stock items</div>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading stock items</div>;
 
   return (
     <div>
@@ -25,7 +25,7 @@ const StockItemGroup = () => {
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default StockItemGroup
+export default StockItemGroup;

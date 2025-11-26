@@ -9,16 +9,16 @@ export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   if (isLoggedIn && (path === "/" || path === "/login")) {
-    console.log("login")
+    console.log("login");
     return NextResponse.redirect(new URL("/app/home", req.url));
   }
-  
+
   if (!isLoggedIn && path !== "/login") {
-    console.log("not login")
+    console.log("not login");
     return NextResponse.redirect(new URL("/login", req.url));
   }
-  
-  console.log('hey refreshed middleware');
+
+  console.log("hey refreshed middleware");
   return NextResponse.next();
 }
 
