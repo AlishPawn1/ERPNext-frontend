@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { forwardCookies } from "@/lib/api-utils";
 
 const FRAPPE_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -7,7 +8,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Convert to URLSearchParams (form data)
     const formData = new URLSearchParams({
       cmd: "login",
       usr: body.usr || body.email,
@@ -24,19 +24,11 @@ export async function POST(request: NextRequest) {
     });
 
     const data = await frappeResponse.json();
-
-    // Create response
     const response = NextResponse.json(data, {
       status: frappeResponse.status,
     });
 
-    // Forward cookies from Frappe
-    const setCookieHeaders = frappeResponse.headers.getSetCookie();
-    setCookieHeaders.forEach((cookie) => {
-      response.headers.append("Set-Cookie", cookie);
-    });
-
-    return response;
+    return forwardCookies(frappeResponse, response);
   } catch (error) {
     console.error("Login proxy error:", error);
     return NextResponse.json(
