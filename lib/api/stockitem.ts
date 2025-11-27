@@ -1,6 +1,8 @@
 import { StockItem } from "@/types/stockItem";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 export const fetchStockItems = async () => {
   const response = await axios.get("/api/stockItem");
   return response.data;
@@ -12,7 +14,9 @@ export const addStockItem = async (stockItemData: StockItem) => {
 };
 
 export const deleteStockItemById = async (id: string) => {
-  const response = await axios.delete(`/api/stockItem?item_code=${id}`);
+  const response = await axios.delete(`/api/stockItem?item_code=${id}`, {
+    withCredentials: true, // Ensure cookies are sent
+  });
   return response.data;
 };
 
@@ -22,22 +26,26 @@ export const updateStockItem = async (
 ) => {
   const response = await axios.put(
     `/api/stockItem?item_code=${id}`,
-    stockItemData
+    stockItemData,
+    {
+      withCredentials: true, // Ensure cookies are sent
+    }
   );
   return response.data;
 };
 
 export const fetchStockItemByCode = async (item_code: string) => {
   const response = await axios.get(
-    `/api/stockItem?item_code=${encodeURIComponent(item_code)}`
+    `/api/stockItem?item_code=${encodeURIComponent(item_code)}`,
+    {
+      withCredentials: true, // Ensure cookies are sent
+    }
   );
-  // response shape may be { data } or the item directly depending on backend
   return response.data?.data ?? response.data;
 };
 
 export const fetchStockUOMForItem = async (item_code: string) => {
   const item = await fetchStockItemByCode(item_code);
-  // Try common property paths to be resilient to API shape
   return (
     item?.stock_uom ?? item?.data?.stock_uom ?? item?.item?.stock_uom ?? null
   );

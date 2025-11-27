@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StockItem, stockItemSchema } from "@/schemas/stockItem.schema";
 import { fetchStockItemGroups } from "@/lib/api/stockItemGroup";
@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { addStockItem } from "@/lib/api/stockitem";
 import { fetchUOM } from "@/lib/api/UOM";
+import { ReusableDropdown } from "@/components/general/ReusableDropDown";
 
 export type StockItemGroup = {
   name: string;
@@ -25,10 +26,17 @@ const StockItemForm = () => {
     register,
     handleSubmit,
     reset,
+    setValue,
+    control,
     formState: { errors },
   } = useForm<StockItem>({
     resolver: zodResolver(stockItemSchema),
   });
+
+  const watchedUom = useWatch({ control, name: "uom" }) as string | undefined;
+  const watchedItemGroup = useWatch({ control, name: "item_group" }) as
+    | string
+    | undefined;
 
   // Fetch item groups
   const { data: itemGroups } = useQuery<StockItemGroup[]>({
@@ -73,10 +81,7 @@ const StockItemForm = () => {
         {/* Item Code */}
         <div>
           <label className="block font-medium">Item Code</label>
-          <input
-            {...register("item_code")}
-            className="w-full border rounded px-2 py-1"
-          />
+          <input {...register("item_code")} className="input-field" />
           {errors.item_code && (
             <p className="text-red-500">{errors.item_code.message}</p>
           )}
@@ -85,10 +90,7 @@ const StockItemForm = () => {
         {/* Item Name */}
         <div>
           <label className="block font-medium">Item Name</label>
-          <input
-            {...register("item_name")}
-            className="w-full border rounded px-2 py-1"
-          />
+          <input {...register("item_name")} className="input-field" />
           {errors.item_name && (
             <p className="text-red-500">{errors.item_name.message}</p>
           )}
@@ -96,12 +98,17 @@ const StockItemForm = () => {
 
         {/* Is Stock Item (checkbox) */}
         <div>
-          <label className="block font-medium">Is Stock Item</label>
-          <input
-            type="checkbox"
-            {...register("is_stock_item")}
-            className="h-4 w-4 mt-1"
-          />
+          <div className="flex items-center space-x-2">
+            <label htmlFor="isStockItem" className="block font-medium">
+              Is Stock Item
+            </label>
+            <input
+              type="checkbox"
+              {...register("is_stock_item")}
+              className="checkbox-field"
+              id="isStockItem"
+            />
+          </div>
           {errors.is_stock_item && (
             <p className="text-red-500">{errors.is_stock_item.message}</p>
           )}
@@ -110,47 +117,41 @@ const StockItemForm = () => {
         {/* UOM */}
         <div>
           <label className="block font-medium">UOM</label>
-          <select
-            {...register("uom")}
-            className="w-full border rounded px-2 py-1"
-            defaultValue=""
-            disabled={uomLoading}
-          >
-            {uomLoading ? (
-              <option>Loading...</option>
-            ) : (
-              <>
-                <option value="" disabled>
-                  Select UOM
-                </option>
-                {uom?.map((item, index) => (
-                  <option key={index} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </>
-            )}
-          </select>
+          {uomLoading ? (
+            <div className="input-field">Loading...</div>
+          ) : (
+            <>
+              <ReusableDropdown
+                items={uom?.map((item) => item.name) ?? []}
+                placeholder="Select UOM"
+                value={(watchedUom as string) ?? null}
+                onSelect={(item: string) => {
+                  // keep both logical fields in sync so zod validation passes
+                  setValue("uom", item);
+                  setValue("stock_uom", item);
+                }}
+                className="w-full"
+                disabled={uomLoading}
+              />
+              <input type="hidden" {...register("uom")} />
+              <input type="hidden" {...register("stock_uom")} />
+            </>
+          )}
           {errors.uom && <p className="text-red-500">{errors.uom.message}</p>}
         </div>
 
         {/* Item Group */}
         <div>
           <label className="block font-medium">Item Group</label>
-          <select
-            {...register("item_group")}
-            className="w-full border rounded px-2 py-1"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Select Item Group
-            </option>
-            {itemGroups?.map((item, index) => (
-              <option key={index} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+          <ReusableDropdown
+            items={itemGroups?.map((item) => item.name) ?? []}
+            placeholder="Select Item Group"
+            value={watchedItemGroup ?? null}
+            onSelect={(item: string) => setValue("item_group", item)}
+            className="w-full"
+            disabled={!itemGroups}
+          />
+          <input type="hidden" {...register("item_group")} />
           {errors.item_group && (
             <p className="text-red-500">{errors.item_group.message}</p>
           )}

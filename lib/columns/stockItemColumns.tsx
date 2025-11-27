@@ -10,7 +10,7 @@ import { deleteStockItemById } from "../api/stockitem";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/models/ConfirmationModal";
 
-const StockItemActionCell = ({ id }: { id: string }) => {
+const StockItemActionCell = ({ itemCode }: { itemCode?: string }) => {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const queryClient = useQueryClient();
 
@@ -26,13 +26,13 @@ const StockItemActionCell = ({ id }: { id: string }) => {
   });
 
   const handleDeleteConfirmation = () => {
-    if (!id) {
+    if (!itemCode) {
       toast.error("Invalid item identifier.");
       setShowConfirmDeleteModal(false);
       return;
     }
 
-    deleteMutation.mutate(id);
+    deleteMutation.mutate(itemCode);
     setShowConfirmDeleteModal(false);
   };
 
@@ -40,7 +40,7 @@ const StockItemActionCell = ({ id }: { id: string }) => {
     <>
       <div className="flex gap-4">
         <Link
-          href={`/app/stock-item/${id}/edit`}
+          href={`/app/stock-item/${itemCode}/edit`}
           className="hover:bg-warning/10 hover:text-warning cursor-pointer rounded-full p-2 transition-colors duration-300"
         >
           <PenSquare size={16} />
@@ -58,7 +58,9 @@ const StockItemActionCell = ({ id }: { id: string }) => {
         onClose={() => setShowConfirmDeleteModal(false)}
         onConfirm={handleDeleteConfirmation}
         title="Delete Stock Item"
-        description="Are you sure you want to proceed?"
+        description={`Are you sure you want to delete ${
+          itemCode || "this item"
+        }?`}
         confirmButtonVariant="danger"
       />
     </>
@@ -82,7 +84,7 @@ const stockItemColumns: ColumnDef<StockItem>[] = [
     header: "Actions",
     cell: ({ row }) => (
       <StockItemActionCell
-        id={row.original.item_code ?? row.original.name ?? ""}
+        itemCode={row.original.item_code ?? row.original.name}
       />
     ),
     size: 80,

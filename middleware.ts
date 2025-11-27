@@ -2,32 +2,29 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
+  const cookies = req.cookies;
+  const sid = cookies.get("sid")?.value;
+  const fullName = cookies.get("full_name")?.value;
+
+  const isLoggedIn =
+    (sid && sid !== "Guest") || (fullName && fullName !== "Guest");
+
   const path = req.nextUrl.pathname;
 
-  const PUBLIC_PAGES = ["/login"];
-
-  const isPublic = PUBLIC_PAGES.includes(path);
-
-  // Read cookie values
-  const sid = req.cookies.get("sid")?.value;
-  const fullName = req.cookies.get("full_name")?.value;
-
-  // User is logged in ONLY if cookies are present and NOT "Guest"
-  const isLoggedIn = sid && sid !== "Guest" && fullName && fullName !== "Guest";
-
-  // Guest trying to visit protected route → redirect to login
-  if (!isLoggedIn && !isPublic) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  // Logged in user trying to visit login → redirect to dashboard
-  if (isLoggedIn && path === "/login") {
+  if (isLoggedIn && (path === "/" || path === "/login")) {
+    console.log("login");
     return NextResponse.redirect(new URL("/app/home", req.url));
   }
 
+  if (!isLoggedIn && path !== "/login") {
+    console.log("not login");
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  console.log("hey refreshed middleware");
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/app/:path*", "/api/:path*"],
+  matcher: ["/", "/login", "/app/:path*"],
 };
