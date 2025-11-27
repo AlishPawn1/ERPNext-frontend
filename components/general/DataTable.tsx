@@ -40,9 +40,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = useState("");
 
-  // `useReactTable` returns functions that the React compiler cannot safely memoize.
-  // The React Compiler ESLint rule warns about this; it's expected for TanStack Table.
-  // Disable the incompatible-library warning for this call.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,

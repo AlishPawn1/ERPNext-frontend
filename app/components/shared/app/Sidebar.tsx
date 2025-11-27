@@ -31,6 +31,7 @@ const sidebarLinks: SidebarLink[] = [
   { name: "Stock", href: "/app/stock", icon: Box },
   { name: "Stock Item", href: "/app/stock-item", icon: Box },
   { name: "Stock Item Group", href: "/app/stock-item-group", icon: Box },
+  { name: "UOM", href: "/app/uom", icon: Box },
 ];
 
 const Sidebar = () => {

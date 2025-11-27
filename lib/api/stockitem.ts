@@ -26,3 +26,19 @@ export const updateStockItem = async (
   );
   return response.data;
 };
+
+export const fetchStockItemByCode = async (item_code: string) => {
+  const response = await axios.get(
+    `/api/stockItem?item_code=${encodeURIComponent(item_code)}`
+  );
+  // response shape may be { data } or the item directly depending on backend
+  return response.data?.data ?? response.data;
+};
+
+export const fetchStockUOMForItem = async (item_code: string) => {
+  const item = await fetchStockItemByCode(item_code);
+  // Try common property paths to be resilient to API shape
+  return (
+    item?.stock_uom ?? item?.data?.stock_uom ?? item?.item?.stock_uom ?? null
+  );
+};

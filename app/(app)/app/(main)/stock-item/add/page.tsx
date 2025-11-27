@@ -8,11 +8,14 @@ import { fetchStockItemGroups } from "@/lib/api/stockItemGroup";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { addStockItem } from "@/lib/api/stockitem";
+import { fetchUOM } from "@/lib/api/UOM";
 
-// Define the type for item groups
 export type StockItemGroup = {
   name: string;
-  // add more fields if your API returns more
+};
+
+export type UOM = {
+  name: string;
 };
 
 const StockItemForm = () => {
@@ -33,6 +36,11 @@ const StockItemForm = () => {
     queryFn: fetchStockItemGroups,
   });
 
+  const { data: uom, isLoading: uomLoading } = useQuery<UOM[]>({
+    queryKey: ["uom-list"],
+    queryFn: fetchUOM,
+  });
+
   // Mutation for adding a stock item
   const mutation = useMutation({
     mutationFn: (stockItemData: StockItem) => addStockItem(stockItemData),
@@ -49,7 +57,13 @@ const StockItemForm = () => {
   });
 
   const onSubmit = (data: StockItem) => {
-    mutation.mutate(data);
+    // Ensure backend receives `stock_uom`. Use `uom` as the single UOM.
+    const payload: StockItem = {
+      ...data,
+      stock_uom: data.uom,
+    };
+
+    mutation.mutate(payload);
   };
 
   return (
@@ -80,38 +94,43 @@ const StockItemForm = () => {
           )}
         </div>
 
-        {/* Is Stock Item */}
+        {/* Is Stock Item (checkbox) */}
         <div>
           <label className="block font-medium">Is Stock Item</label>
           <input
-            type="number"
-            {...register("is_stock_item", { valueAsNumber: true })}
-            className="w-full border rounded px-2 py-1"
+            type="checkbox"
+            {...register("is_stock_item")}
+            className="h-4 w-4 mt-1"
           />
           {errors.is_stock_item && (
             <p className="text-red-500">{errors.is_stock_item.message}</p>
           )}
         </div>
 
-        {/* Stock UOM */}
-        <div>
-          <label className="block font-medium">Stock UOM</label>
-          <input
-            {...register("stock_uom")}
-            className="w-full border rounded px-2 py-1"
-          />
-          {errors.stock_uom && (
-            <p className="text-red-500">{errors.stock_uom.message}</p>
-          )}
-        </div>
-
         {/* UOM */}
         <div>
           <label className="block font-medium">UOM</label>
-          <input
+          <select
             {...register("uom")}
             className="w-full border rounded px-2 py-1"
-          />
+            defaultValue=""
+            disabled={uomLoading}
+          >
+            {uomLoading ? (
+              <option>Loading...</option>
+            ) : (
+              <>
+                <option value="" disabled>
+                  Select UOM
+                </option>
+                {uom?.map((item, index) => (
+                  <option key={index} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </>
+            )}
+          </select>
           {errors.uom && <p className="text-red-500">{errors.uom.message}</p>}
         </div>
 
@@ -140,10 +159,10 @@ const StockItemForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={mutation.isPending}
+          disabled={mutation.status === "pending"}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
         >
-          {mutation.isPending ? "Creating..." : "Create Stock Item"}
+          {mutation.status === "pending" ? "Creating..." : "Create Stock Item"}
         </button>
       </form>
     </div>
