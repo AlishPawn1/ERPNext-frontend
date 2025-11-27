@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 const FRAPPE_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
+// Default paths for CSRF bootstrapping - can be overridden
+const DEFAULT_CSRF_PATHS = ["/"];
+
 // -----------------------------------------------------------------------------
 // Cookie & CSRF Utilities
 // -----------------------------------------------------------------------------
@@ -36,10 +39,7 @@ export function getSetCookieHeaders(response: Response): string[] {
 /**
  * Forward Set-Cookie headers from backend to client
  */
-export function forwardCookies(
-  from: Response,
-  to: NextResponse
-): NextResponse {
+export function forwardCookies(from: Response, to: NextResponse): NextResponse {
   getSetCookieHeaders(from).forEach((cookie) =>
     to.headers.append("Set-Cookie", cookie)
   );
@@ -48,11 +48,14 @@ export function forwardCookies(
 
 /**
  * Bootstrap CSRF token by making initial requests
+ * @param cookies - Current cookies from request
+ * @param paths - Array of paths to try (defaults to ["/"])
+ * @returns Object with csrf token and any set-cookie headers
  */
 export async function bootstrapCSRF(
-  cookies: string
+  cookies: string,
+  paths: string[] = DEFAULT_CSRF_PATHS
 ): Promise<{ csrf: string | null; setCookies: string[] }> {
-  const paths = ["/resource/DocType/Item", "/"];
   const mergedCookies: string[] = [];
 
   for (const path of paths) {
@@ -71,8 +74,11 @@ export async function bootstrapCSRF(
       const setCookies = getSetCookieHeaders(resp);
       mergedCookies.push(...setCookies);
 
+      // Check for CSRF in Set-Cookie headers
       for (const cookie of setCookies) {
-        const match = cookie.match(/(?:frappe_csrf_token|csrf_token)=([^;\s]+)/i);
+        const match = cookie.match(
+          /(?:frappe_csrf_token|csrf_token)=([^;\s]+)/i
+        );
         if (match) {
           return {
             csrf: decodeURIComponent(match[1]),
@@ -81,6 +87,7 @@ export async function bootstrapCSRF(
         }
       }
 
+      // Check for CSRF in response body (for HTML responses)
       const body = await resp.text();
       const htmlMatch = body.match(/frappe\.csrf_token\s*=\s*['"](.*?)['"]/);
       if (htmlMatch) {
@@ -91,6 +98,7 @@ export async function bootstrapCSRF(
     }
   }
 
+  // Last resort: check if CSRF is already in cookies
   const combined = [cookies, ...mergedCookies].join("; ");
   const match = combined.match(/(?:frappe_csrf_token|csrf_token)=([^;\s]+)/i);
 
