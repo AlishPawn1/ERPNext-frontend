@@ -1,47 +1,52 @@
 import { StockItem } from "@/types/stockItem";
-import axios from "axios";
+import axios, { AxiosRequestConfig, Method } from "axios";
 
-axios.defaults.withCredentials = true;
+// Create an axios instance preconfigured to send credentials
+const api = axios.create({
+  withCredentials: true,
+});
+
+async function request<T = unknown>(
+  method: Method,
+  url: string,
+  data?: unknown,
+  config?: AxiosRequestConfig
+): Promise<T> {
+  const resp = await api.request({ method, url, data, ...(config || {}) });
+  return resp.data as T;
+}
 
 export const fetchStockItems = async () => {
-  const response = await axios.get("/api/stockItem");
-  return response.data;
+  return request<unknown>("get", "/api/stockItem");
 };
 
 export const addStockItem = async (stockItemData: StockItem) => {
-  const response = await axios.post("/api/stockItem", stockItemData);
-  return response.data;
+  return request<unknown>("post", "/api/stockItem", stockItemData);
 };
 
 export const deleteStockItemById = async (id: string) => {
-  const response = await axios.delete(`/api/stockItem?item_code=${id}`, {
-    withCredentials: true, // Ensure cookies are sent
-  });
-  return response.data;
+  return request<unknown>(
+    "delete",
+    `/api/stockItem?item_code=${encodeURIComponent(id)}`
+  );
 };
 
 export const updateStockItem = async (
   id: string,
   stockItemData: Partial<StockItem>
 ) => {
-  const response = await axios.put(
-    `/api/stockItem?item_code=${id}`,
-    stockItemData,
-    {
-      withCredentials: true, // Ensure cookies are sent
-    }
+  return request<unknown>(
+    "put",
+    `/api/stockItem?item_code=${encodeURIComponent(id)}`,
+    stockItemData
   );
-  return response.data;
 };
 
 export const fetchStockItemByCode = async (item_code: string) => {
-  const response = await axios.get(
-    `/api/stockItem?item_code=${encodeURIComponent(item_code)}`,
-    {
-      withCredentials: true, // Ensure cookies are sent
-    }
+  const raw = await api.get(
+    `/api/stockItem?item_code=${encodeURIComponent(item_code)}`
   );
-  return response.data?.data ?? response.data;
+  return raw.data?.data ?? raw.data;
 };
 
 export const fetchStockUOMForItem = async (item_code: string) => {
