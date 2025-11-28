@@ -3,26 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 const FRAPPE_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-export function getSetCookieHeaders(response: Response): string[] {
-  const headersRaw = response.headers as unknown as {
-    getSetCookie?: () => string[];
-  };
-
-  if (typeof headersRaw.getSetCookie === "function") {
-    const arr = headersRaw.getSetCookie();
-    return Array.isArray(arr) ? arr : [];
-  }
-
-  return [];
-}
-
-export function forwardCookies(from: Response, to: NextResponse): NextResponse {
-  getSetCookieHeaders(from).forEach((cookie) =>
-    to.headers.append("Set-Cookie", cookie)
-  );
-  return to;
-}
-
 export async function proxyGet(
   request: NextRequest,
   resourcePath: string,
@@ -51,7 +31,7 @@ export async function proxyGet(
     }
 
     const nextResponse = NextResponse.json(data, { status: 200 });
-    return forwardCookies(response, nextResponse);
+    return nextResponse;
   } catch (error) {
     console.error(`${resourceName} API Error:`, error);
     return NextResponse.json(
@@ -87,7 +67,7 @@ export async function proxyPost(
     const data = await response.json();
     const nextResponse = NextResponse.json(data, { status: response.status });
 
-    return forwardCookies(response, nextResponse);
+    return nextResponse;
   } catch (error) {
     console.error(`${resourceName} POST Error:`, error);
     return NextResponse.json(
@@ -136,7 +116,7 @@ export async function proxyPut(
     const data = await response.json();
     const nextResponse = NextResponse.json(data, { status: response.status });
 
-    return forwardCookies(response, nextResponse);
+    return nextResponse;
   } catch (error) {
     console.error(`${resourceName} PUT Error:`, error);
     return NextResponse.json(
@@ -182,7 +162,7 @@ export async function proxyDelete(
     const data = await response.json();
     const nextResponse = NextResponse.json(data, { status: response.status });
 
-    return forwardCookies(response, nextResponse);
+    return nextResponse;
   } catch (error) {
     console.error(`${resourceName} DELETE Error:`, error);
     return NextResponse.json(
