@@ -6,6 +6,9 @@ import {
   ChevronDown,
   ChevronUp,
   Box,
+  Edit,
+  Tag,
+  Columns,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -30,8 +33,9 @@ const sidebarLinks: SidebarLink[] = [
   { name: "Home", href: "/app/home", icon: Settings },
   { name: "Stock", href: "/app/stock", icon: Box },
   { name: "Stock Item", href: "/app/stock-item", icon: Box },
-  { name: "Stock Item Group", href: "/app/stock-item-group", icon: Box },
-  { name: "UOM", href: "/app/uom", icon: Box },
+  { name: "Stock Item Group", href: "/app/stock-item-group", icon: Tag },
+  { name: "UOM", href: "/app/uom", icon: Columns },
+  { name: "Customize Field", href: "/app/customize-field", icon: Edit },
 ];
 
 const Sidebar = () => {
@@ -43,7 +47,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-gray-800 text-white h-screen p-4 flex flex-col">
+    <aside className="w-64 bg-gray-800 text-white h-screen p-4 flex flex-col sticky top-0 overflow-y-auto shadow-sm">
       <div className="text-xl font-bold mb-6">Admin Panel</div>
 
       <nav className="flex flex-col space-y-2">

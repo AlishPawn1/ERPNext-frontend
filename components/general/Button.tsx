@@ -29,15 +29,17 @@ type ButtonProps = {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-primary hover:bg-primary-hover text-neutral-light shadow-neutral shadow-sm disabled:pointer-events-none disabled:bg-neutral",
+    "bg-primary text-white hover:bg-primary-hover text-neutral-light shadow-sm shadow-neutral disabled:opacity-60 disabled:pointer-events-none disabled:cursor-not-allowed",
   neutral:
-    "bg-neutral-light hover:bg-neutral text-neutral-darker shadow-neutral shadow-sm disabled:bg-neutral/50 disabled:text-neutral disabled:pointer-events-none disabled:cursor-default",
+    "bg-neutral-light hover:bg-neutral text-neutral-darker shadow-sm shadow-neutral disabled:opacity-60 disabled:text-neutral disabled:pointer-events-none disabled:cursor-not-allowed",
   outline:
-    "bg-transparent border border-neutral text-neutral-dark hover:bg-neutral/10 disabled:bg-transparent disabled:border-neutral/50 disabled:text-neutral disabled:pointer-events-none disabled:cursor-default disabled:",
-  ghost: "bg-transparent hover:bg-neutral-dark/10",
+    "bg-transparent border border-neutral text-neutral-dark hover:bg-neutral/10 disabled:bg-transparent disabled:border-neutral/50 disabled:text-neutral disabled:pointer-events-none disabled:cursor-not-allowed",
+  ghost:
+    "bg-transparent hover:bg-neutral-dark/10 disabled:opacity-60 disabled:pointer-events-none disabled:cursor-not-allowed",
   danger:
-    "bg-danger hover:bg-danger-dark text-neutral-light shadow-sm shadow-neutral",
-  black: "bg-black text-white shadow-neutral shadow-sm",
+    "bg-danger hover:bg-danger-dark text-neutral-light shadow-sm shadow-neutral disabled:opacity-60 disabled:pointer-events-none disabled:cursor-not-allowed",
+  black:
+    "bg-black text-white shadow-sm shadow-neutral disabled:opacity-60 disabled:pointer-events-none disabled:cursor-not-allowed",
 };
 
 const Button: React.FC<ButtonProps> = ({
