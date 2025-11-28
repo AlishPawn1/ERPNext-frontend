@@ -14,16 +14,16 @@ const StockItemGroup = () => {
   if (error) return <div>Error loading stock items</div>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Stock Items Group</h1>
-      <div>Total Stock Items Groups: {data?.length}</div>
-      <ul>
+    <div className="max-w-7xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Stock Item Groups</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         {data?.map((item: { name: string }, index: number) => (
-          <li key={index}>
-            <span>{item.name}</span>
-          </li>
+          <div key={index} className="p-3 bg-white rounded border">
+            {item.name}
+          </div>
         ))}
-      </ul>
+      </div>
+      <div className="text-sm text-zinc-600">Total Groups: {data?.length}</div>
     </div>
   );
 };

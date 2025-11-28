@@ -14,16 +14,16 @@ const UOM = () => {
   if (error) return <div>Error loading UOM</div>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">UOM</h1>
-      <div>Total UOM: {data?.length}</div>
-      <ul>
+    <div className="max-w-7xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Units of Measure</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         {data?.map((item: { name: string }, index: number) => (
-          <li key={index}>
-            <span>{item.name}</span>
-          </li>
+          <div key={index} className="p-3 bg-white rounded border">
+            {item.name}
+          </div>
         ))}
-      </ul>
+      </div>
+      <div className="text-sm text-zinc-600">Total UOM: {data?.length}</div>
     </div>
   );
 };
