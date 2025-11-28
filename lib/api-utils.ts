@@ -3,13 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 const FRAPPE_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-// -----------------------------------------------------------------------------
-// Cookie Utilities
-// -----------------------------------------------------------------------------
-
-/**
- * Extract all Set-Cookie headers from response
- */
 export function getSetCookieHeaders(response: Response): string[] {
   const headersRaw = response.headers as unknown as {
     getSetCookie?: () => string[];
@@ -20,13 +13,9 @@ export function getSetCookieHeaders(response: Response): string[] {
     return Array.isArray(arr) ? arr : [];
   }
 
-  const value = response.headers.get("set-cookie");
-  return value ? [value] : [];
+  return [];
 }
 
-/**
- * Forward Set-Cookie headers from backend to client
- */
 export function forwardCookies(from: Response, to: NextResponse): NextResponse {
   getSetCookieHeaders(from).forEach((cookie) =>
     to.headers.append("Set-Cookie", cookie)
@@ -34,13 +23,6 @@ export function forwardCookies(from: Response, to: NextResponse): NextResponse {
   return to;
 }
 
-// -----------------------------------------------------------------------------
-// Generic Proxy Functions
-// -----------------------------------------------------------------------------
-
-/**
- * Proxy GET request to Frappe backend
- */
 export async function proxyGet(
   request: NextRequest,
   resourcePath: string,
@@ -82,9 +64,6 @@ export async function proxyGet(
   }
 }
 
-/**
- * Proxy POST request to Frappe backend
- */
 export async function proxyPost(
   request: NextRequest,
   resourcePath: string,
@@ -121,9 +100,6 @@ export async function proxyPost(
   }
 }
 
-/**
- * Proxy PUT request to Frappe backend
- */
 export async function proxyPut(
   request: NextRequest,
   resourcePath: string,
@@ -173,9 +149,6 @@ export async function proxyPut(
   }
 }
 
-/**
- * Proxy DELETE request to Frappe backend
- */
 export async function proxyDelete(
   request: NextRequest,
   resourcePath: string,
