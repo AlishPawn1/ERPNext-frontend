@@ -1,28 +1,6 @@
 import Link from "next/link";
 
-async function fetchCount(path: string) {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) return { count: 0, ok: false };
-    const json = await res.json();
-    // Frappe resource endpoints return { data: [...] }
-    const data = json?.data ?? [];
-    return { count: Array.isArray(data) ? data.length : 0, ok: true };
-  } catch (err) {
-    console.error("fetchCount error", err);
-    return { count: 0, ok: false };
-  }
-}
-
 export default async function Home() {
-  const [items, groups, uoms, customers, suppliers] = await Promise.all([
-    fetchCount("/api/stockItem"),
-    fetchCount("/api/stockItemGroup"),
-    fetchCount("/api/uom"),
-    fetchCount("/api/customers"),
-    fetchCount("/api/suppliers"),
-  ]);
-
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <main className="max-w-6xl mx-auto p-8">
@@ -63,13 +41,10 @@ export default async function Home() {
           <h2 className="text-2xl font-medium mb-4">Dashboard</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 rounded border">
-              Customers: <strong>{customers.count}</strong>
+              Suppliers: <strong>0</strong>
             </div>
             <div className="p-4 rounded border">
-              Suppliers: <strong>{suppliers.count}</strong>
-            </div>
-            <div className="p-4 rounded border">
-              Stock Items: <strong>{items.count}</strong>
+              Stock Items: <strong>0</strong>
             </div>
           </div>
         </section>
@@ -82,13 +57,13 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 rounded border">
-              Stock Items: <strong>{items.count}</strong>
+              Stock Items: <strong>0</strong>
             </div>
             <div className="p-4 rounded border">
-              Item Groups: <strong>{groups.count}</strong>
+              Item Groups: <strong>0</strong>
             </div>
             <div className="p-4 rounded border">
-              UOMs: <strong>{uoms.count}</strong>
+              UOMs: <strong>0</strong>
             </div>
           </div>
         </section>
@@ -104,7 +79,7 @@ export default async function Home() {
 
           <ul className="space-y-2">
             <li className="p-3 rounded border">
-              Total items: <strong>{items.count}</strong>
+              Total items: <strong>0</strong>
             </li>
           </ul>
         </section>
@@ -118,7 +93,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-3 rounded border">
-              Total groups: <strong>{groups.count}</strong>
+              Total groups: <strong>0</strong>
             </div>
           </div>
         </section>
@@ -129,7 +104,7 @@ export default async function Home() {
 
           <div className="flex gap-3 flex-wrap">
             <div className="p-3 rounded border">
-              Total UOMs: <strong>{uoms.count}</strong>
+              Total UOMs: <strong>0</strong>
             </div>
           </div>
         </section>
