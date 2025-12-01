@@ -22,6 +22,7 @@ type SidebarLink = {
 
 const sidebarLinks: SidebarLink[] = [
   { name: "Dashboard", href: "/app/dashboard", icon: Home },
+  { name: "Home", href: "/app/home", icon: Settings },
   {
     name: "Users",
     icon: Users,
@@ -30,7 +31,6 @@ const sidebarLinks: SidebarLink[] = [
       { name: "Add User", href: "/app/users/add", icon: Users },
     ],
   },
-  { name: "Home", href: "/app/home", icon: Settings },
   { name: "Stock", href: "/app/stock", icon: Box },
   { name: "Stock Item", href: "/app/stock-item", icon: Box },
   { name: "Stock Item Group", href: "/app/stock-item-group", icon: Tag },

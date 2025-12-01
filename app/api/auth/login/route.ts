@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { forwardCookies } from "@/lib/api-utils";
 
 const FRAPPE_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -28,7 +27,6 @@ export async function POST(request: NextRequest) {
       status: frappeResponse.status,
     });
 
-<<<<<<< Updated upstream
     // Forward cookies only for login (sets sid, user_id, etc.)
     const setCookies = frappeResponse.headers.get("set-cookie");
     if (setCookies) {
@@ -36,9 +34,6 @@ export async function POST(request: NextRequest) {
     }
 
     return response;
-=======
-    return forwardCookies(frappeResponse, response);
->>>>>>> Stashed changes
   } catch (error) {
     console.error("Login proxy error:", error);
     return NextResponse.json(
